@@ -1,3 +1,4 @@
+import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
 
@@ -6,6 +7,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Parser {
     public void auth(String user, String password) throws IOException {
@@ -24,7 +29,14 @@ public class Parser {
             response.append(inputLine);
         }
         in.close();
+        List<String> href = new ArrayList<>();
+        Regex r = new Regex("href=\".+\"");
+        Pattern pattern = Pattern.compile("(?<=Repository&quot;,&quot;url&quot;:&quot;)(https:.+?)(?=&quot)");
+        Matcher matcher = pattern.matcher(response.toString());
+        while (matcher.find())
+            href.add(matcher.group());
 
-        System.out.println(response.toString());
+
+        System.out.println(href);
     }
 }
