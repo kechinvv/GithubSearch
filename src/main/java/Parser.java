@@ -1,15 +1,19 @@
-import java.io.BufferedReader;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 public class Parser {
     private static void download(String urlStr, String file) throws IOException {
@@ -27,8 +31,15 @@ public class Parser {
         int i = 0;
         for (String s : pageRep) {
             i++;
-            List<String> zipDown = getPage(s, "(?<=data-ga-click=\"Repository, download zip, location:repo overview\" data-open-app=\"link\" href=\")(.+?)(?=\">)");
-            download(" https://github.com"+zipDown.get(0), "C:/Users/valer/IdeaProjects/GithubSearch/zips/" + i + ".zip");
+            String source = "C:/Users/valer/IdeaProjects/GithubSearch/zips/" + i + ".zip";
+            String sourceFolder = "C:/Users/valer/IdeaProjects/GithubSearch/zips/" + i;
+            String dist = "C:/Users/valer/IdeaProjects/GithubSearch/zips/"+i;
+            String reg = "(?<=data-ga-click=\"Repository, download zip, location:repo overview\" data-open-app=\"link\" href=\")(.+?)(?=\">)";
+            List<String> zipDown = getPage(s, reg);
+            download(" https://github.com" + zipDown.get(0), source);
+            extract(source, dist);
+            if (delete(source)) System.out.println("Archive " + i + " deleted successful");
+            if (delete(sourceFolder)) System.out.println("Folder " + i + " deleted successful");
         }
     }
 
@@ -51,4 +62,26 @@ public class Parser {
         System.out.println(href);
         return href;
     }
+
+    public void extract(String source, String destination) {
+        try {
+            ZipFile zipFile = new ZipFile(source);
+            zipFile.extractAll(destination);
+        } catch (ZipException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean delete(String source) throws IOException {
+        File file = new File(source);
+        if (file.isDirectory()) {
+            Files.walk(file.toPath())
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        }
+        if (!file.exists()) return true;
+        return file.delete();
+    }
+
 }
