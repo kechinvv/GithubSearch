@@ -73,7 +73,7 @@ apply plugin: 'kotlinx-serialization'
 
 ext {
     aetherVersion = '1.1.0'
-    javaMainClass = "com.stepanov.bbf.bugfinder.MainKt"
+    javaMainClass = "Main.Main"
 }
 
 dependencies {

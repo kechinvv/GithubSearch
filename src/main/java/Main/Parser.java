@@ -1,15 +1,11 @@
 package Main;
 
-import net.lingala.zip4j.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -20,13 +16,18 @@ import java.util.regex.Pattern;
 
 
 public class Parser {
-    private static void download(String urlStr, String file) throws IOException {
-        URL url = new URL(urlStr);
-        ReadableByteChannel rbc = Channels.newChannel(url.openStream());
-        FileOutputStream fos = new FileOutputStream(file);
-        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-        fos.close();
-        rbc.close();
+
+    public void cloneRep(String urlStr, String file) {
+        try
+        {
+            Process proc = Runtime.getRuntime().exec("git clone --depth=1 --recurse-submodules -j8 "+urlStr+" "+file);
+            proc.waitFor();
+            proc.destroy();
+        }
+        catch (IOException | InterruptedException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void get() throws IOException {
@@ -35,14 +36,8 @@ public class Parser {
         int i = 0;
         for (String s : pageRep) {
             i++;
-            String source = "C:/Users/valer/IdeaProjects/GithubSearch/zips/" + i + ".zip";
             String sourceFolder = "C:/Users/valer/IdeaProjects/GithubSearch/zips/" + i;
-            String dist = "C:/Users/valer/IdeaProjects/GithubSearch/zips/"+i;
-            String reg = "(?<=data-ga-click=\"Repository, download zip, location:repo overview\" data-open-app=\"link\" href=\")(.+?)(?=\">)";
-            List<String> zipDown = getPage(s, reg);
-            download(" https://github.com" + zipDown.get(0), source);
-            extract(source, dist);
-            if (delete(source)) System.out.println("Archive " + i + " deleted successful");
+            cloneRep(s, sourceFolder);
             if (delete(sourceFolder)) System.out.println("Folder " + i + " deleted successful");
         }
     }
@@ -67,14 +62,6 @@ public class Parser {
         return href;
     }
 
-    public void extract(String source, String destination) {
-        try {
-            ZipFile zipFile = new ZipFile(source);
-            zipFile.extractAll(destination);
-        } catch (ZipException e) {
-            e.printStackTrace();
-        }
-    }
 
     public boolean delete(String source) throws IOException {
         File file = new File(source);
