@@ -35,7 +35,7 @@ public class Parser {
             i++;
             String sourceFolder = "C:/Users/valer/IdeaProjects/GithubSearch/zips/" + i;
             cloneRep(s, sourceFolder);
-            createPSI(sourceFolder);
+            PSI(sourceFolder);
             // if (delete(sourceFolder)) System.out.println("Folder " + i + " deleted successful");
         }
     }
@@ -73,7 +73,7 @@ public class Parser {
         return file.delete();
     }
 
-    public void createPSI(String path) {
+    public void PSI(String path) {
 
     }
 
