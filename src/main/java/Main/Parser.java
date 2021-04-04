@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
@@ -16,18 +15,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-
 public class Parser {
 
     public void cloneRep(String urlStr, String file) {
-        try
-        {
-            Process proc = Runtime.getRuntime().exec("git clone --depth=1 --recurse-submodules -j8 "+urlStr+" "+file);
+        try {
+            Process proc = Runtime.getRuntime().exec("git clone --depth=1 --recurse-submodules -j8 " + urlStr + " " + file);
             proc.waitFor();
             proc.destroy();
-        }
-        catch (IOException | InterruptedException e)
-        {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -41,7 +36,7 @@ public class Parser {
             String sourceFolder = "C:/Users/valer/IdeaProjects/GithubSearch/zips/" + i;
             cloneRep(s, sourceFolder);
             createPSI(sourceFolder);
-           // if (delete(sourceFolder)) System.out.println("Folder " + i + " deleted successful");
+            // if (delete(sourceFolder)) System.out.println("Folder " + i + " deleted successful");
         }
     }
 
@@ -78,7 +73,7 @@ public class Parser {
         return file.delete();
     }
 
-    public void createPSI(String path){
+    public void createPSI(String path) {
 
     }
 
