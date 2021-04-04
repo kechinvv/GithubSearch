@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
@@ -13,6 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 
 public class Parser {
@@ -38,7 +40,8 @@ public class Parser {
             i++;
             String sourceFolder = "C:/Users/valer/IdeaProjects/GithubSearch/zips/" + i;
             cloneRep(s, sourceFolder);
-            if (delete(sourceFolder)) System.out.println("Folder " + i + " deleted successful");
+            createPSI(sourceFolder);
+           // if (delete(sourceFolder)) System.out.println("Folder " + i + " deleted successful");
         }
     }
 
@@ -73,6 +76,10 @@ public class Parser {
         }
         if (!file.exists()) return true;
         return file.delete();
+    }
+
+    public void createPSI(String path){
+
     }
 
 }

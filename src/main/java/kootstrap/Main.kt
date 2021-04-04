@@ -1,9 +1,10 @@
+package kootstrap
+
 import com.intellij.openapi.extensions.ExtensionPoint
 import com.intellij.openapi.extensions.Extensions
 import com.intellij.psi.impl.source.tree.TreeCopyHandler
 import kootstrap.util.opt
 import kootstrap.util.targetRoots
-
 import org.jetbrains.kotlin.descriptors.VariableDescriptor
 import org.jetbrains.kotlin.psi.KtPsiFactory
 import org.jetbrains.kotlin.psi.KtVariableDeclaration
@@ -48,7 +49,7 @@ fun doit(args: Array<String>) {
 }
 
 fun main(args: Array<String>) {
-    val projectDir = ""
+    val projectDir = "C:\\Users\\valer\\IdeaProjects\\ProgrammingLabSummer2020Task1"
     val new_args = arrayOf("-t", projectDir)
     doit(new_args)
 }

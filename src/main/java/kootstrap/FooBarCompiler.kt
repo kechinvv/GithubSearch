@@ -1,3 +1,5 @@
+package kootstrap
+
 import com.intellij.mock.MockProject
 import com.intellij.openapi.extensions.ExtensionPoint
 import com.intellij.openapi.extensions.Extensions
@@ -39,19 +41,19 @@ object FooBarCompiler {
             TreeCopyHandler::class.java.canonicalName,
             ExtensionPoint.Kind.INTERFACE
         )
-    }
+   }
 
     fun analyzeBunchOfSources(
-        env: KotlinCoreEnvironment,
-        files: Collection<KtFile>,
-        cfg: CompilerConfiguration
+            env: KotlinCoreEnvironment,
+            files: Collection<KtFile>,
+            cfg: CompilerConfiguration
     ): BindingContext? {
         return TopDownAnalyzerFacadeForJVM.analyzeFilesWithJavaIntegration(
-            env.project,
-            files,
-            CliBindingTrace(),
-            cfg,
-            { scope -> JvmPackagePartProvider(env.configuration.languageVersionSettings, scope) }
+                env.project,
+                files,
+                CliBindingTrace(),
+                cfg,
+                { scope -> JvmPackagePartProvider(env.configuration.languageVersionSettings, scope) }
         ).bindingContext
     }
 
@@ -85,35 +87,35 @@ object FooBarCompiler {
 
         val disposable = Disposer.newDisposable()
         val env = KotlinCoreEnvironment.createForProduction(
-            disposable,
-            cfg,
-            EnvironmentConfigFiles.JVM_CONFIG_FILES
+                disposable,
+                cfg,
+                EnvironmentConfigFiles.JVM_CONFIG_FILES
         )
         val project = env.project as MockProject
         class MyPomModelImpl(env: KotlinCoreEnvironment) : PomModelImpl(env.project) {
             override fun runTransaction(pt: PomTransaction) = pt.run()
         }
         project.registerService(
-            TreeAspect::class.java,
-            TreeAspect()
+                TreeAspect::class.java,
+                TreeAspect()
         )
 
         val pomModel = MyPomModelImpl(env)
 
 
         project.registerService(
-            PomModel::class.java,
-            pomModel
+                PomModel::class.java,
+                pomModel
         )
 
         project.registerService(
-            CodeStyleManager::class.java,
-            MockCodeStyleManager(env.project)
+                CodeStyleManager::class.java,
+                MockCodeStyleManager(env.project)
         )
 
         project.registerService(
-            IndentHelper::class.java,
-            MockIndentHelper()
+                IndentHelper::class.java,
+                MockIndentHelper()
         )
 
         return env

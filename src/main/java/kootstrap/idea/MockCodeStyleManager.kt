@@ -13,32 +13,38 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.codeStyle.ChangedRangesInfo
 import com.intellij.psi.codeStyle.CodeStyleManager
 import com.intellij.psi.codeStyle.Indent
+import com.intellij.util.IncorrectOperationException
 import com.intellij.util.ThrowableRunnable
-import kootstrap.kotlinx.Warnings
+import kotlinx.Warnings
 import kootstrap.util.function
 
 class MockCodeStyleManager(private val myProject: Project) : CodeStyleManager() {
     override fun reformatTextWithContext(p0: PsiFile, p1: ChangedRangesInfo) = Unit
     override fun getProject(): Project = myProject
 
+    @Throws(IncorrectOperationException::class)
     override fun reformat(
             element: PsiElement): PsiElement = reformat(element, false)
 
+    @Throws(IncorrectOperationException::class)
     override fun reformat(
             element: PsiElement,
             canChangeWhiteSpacesOnly: Boolean): PsiElement = element
 
+    @Throws(IncorrectOperationException::class)
     override fun reformatRange(
             element: PsiElement,
             startOffset: Int,
             endOffset: Int,
             canChangeWhiteSpacesOnly: Boolean): PsiElement = element
 
+    @Throws(IncorrectOperationException::class)
     override fun reformatRange(
             element: PsiElement,
             startOffset: Int,
             endOffset: Int): PsiElement = element
 
+    @Throws(IncorrectOperationException::class)
     override fun reformatText(
             file: PsiFile,
             startOffset: Int,
@@ -46,18 +52,22 @@ class MockCodeStyleManager(private val myProject: Project) : CodeStyleManager() 
         reformatText(file, setOf(TextRange(startOffset, endOffset)))
     }
 
+    @Throws(IncorrectOperationException::class)
     override fun reformatText(
             file: PsiFile,
             ranges: Collection<TextRange>) = Unit
 
+    @Throws(IncorrectOperationException::class)
     override fun reformatTextWithContext(
             file: PsiFile,
             ranges: Collection<TextRange>) = Unit
 
+    @Throws(IncorrectOperationException::class)
     override fun reformatNewlyAddedElement(
             parent: ASTNode,
             addedElement: ASTNode) = Unit
 
+    @Throws(IncorrectOperationException::class)
     override fun adjustLineIndent(
             file: PsiFile,
             offset: Int): Int = offset
@@ -66,6 +76,7 @@ class MockCodeStyleManager(private val myProject: Project) : CodeStyleManager() 
             document: Document,
             offset: Int): Int = offset
 
+    @Throws(IncorrectOperationException::class)
     override fun adjustLineIndent(
             file: PsiFile,
             rangeToAdjust: TextRange) = Unit
@@ -93,30 +104,22 @@ class MockCodeStyleManager(private val myProject: Project) : CodeStyleManager() 
         }
 
         override fun min(anotherIndent: Indent) = function {
-            if (anotherIndent is MyIndent) MyIndent(
-                Math.min(amount, anotherIndent.amount)
-            )
+            if (anotherIndent is MyIndent) MyIndent(Math.min(amount, anotherIndent.amount))
             else null
         }
 
         override fun max(anotherIndent: Indent) = function {
-            if (anotherIndent is MyIndent) MyIndent(
-                Math.max(amount, anotherIndent.amount)
-            )
+            if (anotherIndent is MyIndent) MyIndent(Math.max(amount, anotherIndent.amount))
             else null
         }
 
         override fun add(indent: Indent) = function {
-            if (indent is MyIndent) MyIndent(
-                amount + indent.amount
-            )
+            if (indent is MyIndent) MyIndent(amount + indent.amount)
             else null
         }
 
         override fun subtract(indent: Indent) = function {
-            if (indent is MyIndent) MyIndent(
-                amount - indent.amount
-            )
+            if (indent is MyIndent) MyIndent(amount - indent.amount)
             else null
         }
 

@@ -10,10 +10,7 @@ import java.io.File
 object PathUtilEx {
     private val NO_PATH = File("<no_path>")
     private val NO_VERSION = "no.version.at.all"
-    private val NO_SHIT = Pair(
-        NO_PATH,
-        NO_VERSION
-    )
+    private val NO_SHIT = Pair(NO_PATH, NO_VERSION)
 
     private val KOMPILER_RE = Regex("kotlin-compiler-(.*)\\.jar")
 
