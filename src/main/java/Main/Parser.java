@@ -1,5 +1,11 @@
 package Main;
 
+//import com.spbpu.mppconverter.MainKt;
+import com.spbpu.mppconverter.*;
+
+import com.spbpu.mppconverter.util.PSIUtilsKt;
+import org.jetbrains.kotlin.psi.KtFile;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +19,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 public class Parser {
 
@@ -36,7 +41,7 @@ public class Parser {
             String sourceFolder = "C:/Users/valer/IdeaProjects/GithubSearch/zips/" + i;
             cloneRep(s, sourceFolder);
             PSI(sourceFolder);
-            // if (delete(sourceFolder)) System.out.println("Folder " + i + " deleted successful");
+            if (delete(sourceFolder)) System.out.println("Folder " + i + " deleted successful");
         }
     }
 
@@ -74,7 +79,8 @@ public class Parser {
     }
 
     public void PSI(String path) {
-
+        KtFile p = MainKt.main("C:/Users/valer/IdeaProjects/KotlinAsFirst2019/src/lesson12/task1/PhoneBook.kt");
+        PSIUtilsKt.debugPrint(p);
     }
 
 }
