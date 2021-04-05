@@ -1,8 +1,12 @@
 package Main;
 
 //import com.spbpu.mppconverter.MainKt;
-import com.spbpu.mppconverter.*;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.spbpu.mppconverter.MainKt;
 import com.spbpu.mppconverter.util.PSIUtilsKt;
 import org.jetbrains.kotlin.psi.KtFile;
 
@@ -12,13 +16,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Parser {
 
@@ -33,10 +37,10 @@ public class Parser {
     }
 
     public void get() throws IOException {
-        String url = "https://github.com/search?l=Kotlin&p=2&q=kotlin&type=Repositories";
-        List<String> pageRep = getPage(url, "(?<=Repository&quot;,&quot;url&quot;:&quot;)(https:.+?)(?=&quot)");
+        String GITHUB_API_BASE_URL = "https://api.github.com/search/repositories?q=kotlin+language:kotlin&sort=stars&order=desc&page=1";
+        List<String> links = getReps(GITHUB_API_BASE_URL);
         int i = 0;
-        for (String s : pageRep) {
+        for (String s : links) {
             i++;
             String sourceFolder = "C:/Users/valer/IdeaProjects/GithubSearch/zips/" + i;
             cloneRep(s, sourceFolder);
@@ -45,7 +49,7 @@ public class Parser {
         }
     }
 
-    public List<String> getPage(String url, String reg) throws IOException {
+    public List<String> getReps(String url) throws IOException {
         URL obj = new URL(url);
         HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
         connection.setRequestMethod("GET");
@@ -56,13 +60,14 @@ public class Parser {
             response.append(inputLine);
         }
         in.close();
+        JsonObject json = JsonParser.parseString(String.valueOf(response)).getAsJsonObject();
+        JsonArray array = (json.getAsJsonArray("items"));
         List<String> href = new ArrayList<>();
-        Pattern pattern = Pattern.compile(reg);
-        Matcher matcher = pattern.matcher(response.toString());
-        while (matcher.find())
-            href.add(matcher.group());
-        System.out.println(href);
+        for (JsonElement j : array) {
+            href.add(j.getAsJsonObject().getAsJsonPrimitive("html_url").getAsString());
+        }
         return href;
+
     }
 
 
@@ -78,9 +83,17 @@ public class Parser {
         return file.delete();
     }
 
-    public void PSI(String path) {
-        KtFile p = MainKt.main("C:/Users/valer/IdeaProjects/KotlinAsFirst2019/src/lesson12/task1/PhoneBook.kt");
-        PSIUtilsKt.debugPrint(p);
+    public void PSI(String path) throws IOException {
+        List<String> ktFiles = new ArrayList<>();
+        Files.walk(Paths.get(path), FileVisitOption.FOLLOW_LINKS)
+                .map(Path::toFile)
+                .forEach(f -> {
+                    if (f.isFile() && f.getName().endsWith(".kt")) ktFiles.add(f.getAbsolutePath());
+                });
+        for (String pathKt : ktFiles) {
+            KtFile p = MainKt.main(pathKt);
+            PSIUtilsKt.debugPrint(p);
+        }
     }
 
 }
