@@ -24,7 +24,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import static Main.PSI.getPSI;
+
 public class Parser {
+    PSI psi = new PSI();
 
     public void cloneRep(String urlStr, String file) {
         try {
@@ -37,14 +40,16 @@ public class Parser {
     }
 
     public void get() throws IOException {
-        String GITHUB_API_BASE_URL = "https://api.github.com/search/repositories?q=kotlin+language:kotlin&sort=stars&order=desc&page=1";
+        Link l = new Link();
+        //String GITHUB_API_BASE_URL = "https://api.github.com/search/repositories?q=kotlin+language:kotlin&sort=stars&order=desc&page=1";
+        String GITHUB_API_BASE_URL = l.getLink();
         List<String> links = getReps(GITHUB_API_BASE_URL);
         int i = 0;
         for (String s : links) {
             i++;
             String sourceFolder = "C:/Users/valer/IdeaProjects/GithubSearch/zips/" + i;
             cloneRep(s, sourceFolder);
-            PSI(sourceFolder);
+            if (walking(sourceFolder)) break;
             if (delete(sourceFolder)) System.out.println("Folder " + i + " deleted successful");
         }
     }
@@ -83,7 +88,7 @@ public class Parser {
         return file.delete();
     }
 
-    public void PSI(String path) throws IOException {
+    public boolean walking(String path) throws IOException {
         List<String> ktFiles = new ArrayList<>();
         Files.walk(Paths.get(path), FileVisitOption.FOLLOW_LINKS)
                 .map(Path::toFile)
@@ -91,9 +96,15 @@ public class Parser {
                     if (f.isFile() && f.getName().endsWith(".kt")) ktFiles.add(f.getAbsolutePath());
                 });
         for (String pathKt : ktFiles) {
-            KtFile p = MainKt.main(pathKt);
-            PSIUtilsKt.debugPrint(p);
+            KtFile p = getPSI(pathKt);
+            if (psi.equal(p)) {
+                System.out.println(pathKt);
+                return true;
+            };
         }
+        return false;
     }
+
+
 
 }
