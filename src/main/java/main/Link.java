@@ -1,4 +1,4 @@
-package Main;
+package main;
 
 public class Link {
     StringBuffer link = new StringBuffer("https://api.github.com/search/repositories?q=kotlin+language:kotlin&sort=stars&order=desc&page=0");

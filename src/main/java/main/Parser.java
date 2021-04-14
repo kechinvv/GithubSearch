@@ -1,4 +1,4 @@
-package Main;
+package main;
 
 //import com.spbpu.mppconverter.MainKt;
 
@@ -6,8 +6,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.spbpu.mppconverter.MainKt;
-import com.spbpu.mppconverter.util.PSIUtilsKt;
 import org.jetbrains.kotlin.psi.KtFile;
 
 import java.io.BufferedReader;
@@ -24,10 +22,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static Main.PSI.getPSI;
-
 public class Parser {
-    PSI psi = new PSI();
+    KtPSI psi = new KtPSI();
 
     public void cloneRep(String urlStr, String file) {
         try {
@@ -96,7 +92,7 @@ public class Parser {
                     if (f.isFile() && f.getName().endsWith(".kt")) ktFiles.add(f.getAbsolutePath());
                 });
         for (String pathKt : ktFiles) {
-            KtFile p = getPSI(pathKt);
+            KtFile p = KtPSI.Companion.getPSI(pathKt);
             if (psi.equal(p)) {
                 System.out.println(pathKt);
                 return true;
