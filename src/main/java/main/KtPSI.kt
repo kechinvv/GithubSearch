@@ -27,15 +27,10 @@ class KtPSI {
         bindingContext = PSICreator.analyze(pattern)
         val head = pattern.psiOrParent
         val list2 = PsiTreeUtil.collectElementsOfType(head, KtExpression::class.java)
-        println(list2)
-        for (i in list2) {
-            try {
-                println(bindingContext?.get(BindingContext.FUNCTION, i ))
-            } catch (e: Exception) {
-                println("unreal cast: $i")
-            }
+        //println(list2)
+        val checks: Checks = Checks(bindingContext!!, list2)
+        checks.checkRecursion()
 
-        }
 
         println(head.node.getAllChildrenNodes())
         println(head.getAllChildren())
