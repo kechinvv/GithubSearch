@@ -33,7 +33,7 @@ public class PSI {
     }
 
     public void eq() {
-        bindingContext = PSICreator.Companion.analyze(pattern);
+//        bindingContext = PSICreator.Companion.analyze(pattern);
 
         KtElement head = pattern.getPsiOrParent();
 

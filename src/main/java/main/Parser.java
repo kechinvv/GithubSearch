@@ -6,7 +6,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.spbpu.mppconverter.kootstrap.PSICreator;
 import org.jetbrains.kotlin.psi.KtFile;
+import org.jetbrains.kotlin.resolve.BindingContext;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,7 +25,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class Parser {
-    KtPSI psi = new KtPSI();
+    SampleEq sample = new SampleEq();
 
     public void cloneRep(String urlStr, String file) {
         try {
@@ -35,9 +37,8 @@ public class Parser {
         }
     }
 
-    public void get() throws IOException {
+    public void begin() throws IOException {
         Link l = new Link();
-        //String GITHUB_API_BASE_URL = "https://api.github.com/search/repositories?q=kotlin+language:kotlin&sort=stars&order=desc&page=1";
         String GITHUB_API_BASE_URL = l.getLink();
         List<String> links = getReps(GITHUB_API_BASE_URL);
         int i = 0;
@@ -92,8 +93,10 @@ public class Parser {
                     if (f.isFile() && f.getName().endsWith(".kt")) ktFiles.add(f.getAbsolutePath());
                 });
         for (String pathKt : ktFiles) {
-            KtFile p = KtPSI.Companion.getPSI(pathKt);
-            if (psi.equal(p)) {
+            PSICreator data= new PSICreator();
+            KtFile current = data.getPSIForFile(pathKt, true);
+            BindingContext bc = data.getBinding();
+            if (sample.equal(bc)) {
                 System.out.println(pathKt);
                 return true;
             };
