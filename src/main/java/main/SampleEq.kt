@@ -8,28 +8,24 @@ import org.jetbrains.kotlin.resolve.BindingContext
 
 class SampleEq() {
 
-    val s= PSICreator()
-    var ps = s.getPSIForFile("C:/Users/valer/IdeaProjects/GithubSearch/pattern.kt")
-    var bindingContext: BindingContext? = s.getBinding()
-   // var pattern: KtFile = getPSI(path)
 
 
-    fun equal(p: BindingContext): Boolean {
-        eq(p)
+    fun equal(path: String): Boolean {
+        val creator = PSICreator()
+        val tree = creator.getPSIForFile(path) //"C:/Users/valer/IdeaProjects/GithubSearch/pattern.kt"
+        val bindingContext = creator.getBinding()
+        if (bindingContext != null) {
+            eq(bindingContext, tree)
+        }
         return true
     }
 
-    private fun eq(p: BindingContext) {
+    private fun eq(ctx: BindingContext, psi: KtFile) {
 
-
-        val list2 = PsiTreeUtil.collectElementsOfType(ps, KtExpression::class.java)
-        //println(list2)
-        val checks = Checks(bindingContext!!, list2, ps)
+        val list2 = PsiTreeUtil.collectElementsOfType(psi, KtExpression::class.java)
+        val checks = Checks(ctx, list2, psi)
         checks.checkRecursion()
 
-
-        //  println(head.node.getAllChildrenNodes())
-        //   println(head.getAllChildren())
     }
 
 }

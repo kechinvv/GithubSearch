@@ -92,11 +92,11 @@ public class Parser {
                 .forEach(f -> {
                     if (f.isFile() && f.getName().endsWith(".kt")) ktFiles.add(f.getAbsolutePath());
                 });
-        for (String pathKt : ktFiles) {
-            PSICreator data= new PSICreator();
-            KtFile current = data.getPSIForFile(pathKt, true);
-            BindingContext bc = data.getBinding();
-            if (sample.equal(bc)) {
+        //remove it after tests
+        List<String> ktFiless = new ArrayList<>();
+        ktFiless.add("C:/Users/valer/IdeaProjects/KotlinAsFirst2019");
+        for (String pathKt : ktFiless) {
+            if (sample.equal(pathKt)) {
                 System.out.println(pathKt);
                 return true;
             };
