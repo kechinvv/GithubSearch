@@ -22,8 +22,7 @@ class SampleEq() {
 
     private fun eq(ctx: BindingContext, psi: KtFile) {
 
-        val list2 = PsiTreeUtil.collectElementsOfType(psi, KtExpression::class.java)
-        val checks = Checks(ctx, list2, psi)
+        val checks = Checker(ctx, psi)
         checks.checkRecursion()
 
     }

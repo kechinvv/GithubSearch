@@ -1,14 +1,11 @@
 package main;
 
-//import com.spbpu.mppconverter.MainKt;
+
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.spbpu.mppconverter.kootstrap.PSICreator;
-import org.jetbrains.kotlin.psi.KtFile;
-import org.jetbrains.kotlin.resolve.BindingContext;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -94,7 +91,7 @@ public class Parser {
                 });
         //remove it after tests
         List<String> ktFiless = new ArrayList<>();
-        ktFiless.add("C:/Users/valer/IdeaProjects/KotlinAsFirst2019");
+        ktFiless.add("C:/Users/valer/IdeaProjects/src");
         for (String pathKt : ktFiless) {
             if (sample.equal(pathKt)) {
                 System.out.println(pathKt);
