@@ -45,7 +45,7 @@ public class Parser {
                 i++;
                 String sourceFolder = "C:/Users/valer/IdeaProjects/GithubSearch/zips/" + i;
                 cloneRep(s, sourceFolder);
-                if (walking(sourceFolder)) break;
+                if (walking(sourceFolder)) return;
                 if (delete(sourceFolder)) System.out.println("Folder " + i + " deleted successful");
             }
         }
