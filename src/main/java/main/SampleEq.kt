@@ -24,6 +24,7 @@ class SampleEq() {
 
         val checks = Checker(ctx, psi)
         checks.checkRecursion()
+        checks.checkFieldChange()
 
     }
 

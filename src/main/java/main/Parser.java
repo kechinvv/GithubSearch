@@ -1,7 +1,6 @@
 package main;
 
 
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -23,6 +22,7 @@ import java.util.List;
 
 public class Parser {
     SampleEq sample = new SampleEq();
+    int limit = 1000;
 
     public void cloneRep(String urlStr, String file) {
         try {
@@ -35,16 +35,19 @@ public class Parser {
     }
 
     public void begin() throws IOException {
-        Link l = new Link();
-        String GITHUB_API_BASE_URL = l.getLink();
-        List<String> links = getReps(GITHUB_API_BASE_URL);
         int i = 0;
-        for (String s : links) {
-            i++;
-            String sourceFolder = "C:/Users/valer/IdeaProjects/GithubSearch/zips/" + i;
-            cloneRep(s, sourceFolder);
-            if (walking(sourceFolder)) break;
-            if (delete(sourceFolder)) System.out.println("Folder " + i + " deleted successful");
+        Link l = new Link();
+        while (i < limit) {
+            l.nextPage();
+            String GITHUB_API_BASE_URL = l.getLink();
+            List<String> links = getReps(GITHUB_API_BASE_URL);
+            for (String s : links) {
+                i++;
+                String sourceFolder = "C:/Users/valer/IdeaProjects/GithubSearch/zips/" + i;
+                cloneRep(s, sourceFolder);
+                if (walking(sourceFolder)) break;
+                if (delete(sourceFolder)) System.out.println("Folder " + i + " deleted successful");
+            }
         }
     }
 
@@ -96,11 +99,10 @@ public class Parser {
             if (sample.equal(pathKt)) {
                 System.out.println(pathKt);
                 return true;
-            };
+            }
         }
         return false;
     }
-
 
 
 }
