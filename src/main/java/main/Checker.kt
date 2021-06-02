@@ -1,23 +1,14 @@
 package main
 
 
-import com.intellij.psi.PsiBinaryExpression
-import com.intellij.psi.PsiElement
+
 import com.intellij.psi.util.PsiTreeUtil
-import org.jetbrains.kotlin.KtNodeTypes
 import org.jetbrains.kotlin.KtNodeTypes.BINARY_EXPRESSION
-import org.jetbrains.kotlin.asJava.namedUnwrappedElement
-import org.jetbrains.kotlin.asJava.unwrapped
-import org.jetbrains.kotlin.fir.builder.toFirOperation
-import org.jetbrains.kotlin.fir.builder.toUnaryName
 import org.jetbrains.kotlin.js.resolve.diagnostics.findPsi
+import org.jetbrains.kotlin.lexer.KtTokens.EQ
 import org.jetbrains.kotlin.psi.*
-import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
-import org.jetbrains.kotlin.psi.psiUtil.parentSubstitute
 import org.jetbrains.kotlin.resolve.BindingContext
-import org.jetbrains.kotlin.resolve.calls.callUtil.*
-import org.jetbrains.kotlin.utils.addToStdlib.cast
-import java.beans.Expression
+import org.jetbrains.kotlin.resolve.calls.callUtil.getResolvedCall
 
 
 class Checker(bContext: BindingContext, tree: KtFile) {
@@ -54,7 +45,7 @@ class Checker(bContext: BindingContext, tree: KtFile) {
     private fun KtNamedFunction.fieldChange(): Boolean {
         val properties = PsiTreeUtil.collectElementsOfType(this, KtQualifiedExpression::class.java)
         println(properties)
-        val propResolve = properties.mapNotNull {
+        val propTypeFilter = properties.mapNotNull {
             try {
                 if (it.parent.node.elementType == BINARY_EXPRESSION) it.parent
                 else null
@@ -62,9 +53,11 @@ class Checker(bContext: BindingContext, tree: KtFile) {
                 null
             }
         }
-        println(propResolve)
-        val propDiscr = propResolve.mapNotNull { println((it.node.psi as KtBinaryExpression).operationToken)}
-        println(propDiscr)
+        //PLUSEQ      EQ      MINUSEQ      MULTEQ     DIVEQ
+        println(propTypeFilter)
+        val propEqFilter = propTypeFilter.mapNotNull {
+            println(((it.node.psi as KtBinaryExpression).operationToken) == EQ) }
+        println(propEqFilter)
         return false
 
     }
