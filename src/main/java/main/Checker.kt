@@ -44,19 +44,17 @@ class Checker(bContext: BindingContext, tree: KtFile) {
 
     private fun KtNamedFunction.fieldChange(): Boolean {
         val properties = PsiTreeUtil.collectElementsOfType(this, KtQualifiedExpression::class.java)
-        println(properties)
         val propTypeFilter = properties.mapNotNull {
             try {
-                if (it.parent.node.elementType == BINARY_EXPRESSION) it.parent
+                if (it.parent.node.elementType == BINARY_EXPRESSION) it
                 else null
             } catch (e: AssertionError) {
                 null
             }
         }
         //PLUSEQ      EQ      MINUSEQ      MULTEQ     DIVEQ
-        println(propTypeFilter)
         val propEqFilter = propTypeFilter.filter {
-            (it.node.psi as KtBinaryExpression).operationToken in setOf<KtSingleValueToken>(
+            (it.parent.node.psi as KtBinaryExpression).operationToken in setOf<KtSingleValueToken>(
                 EQ,
                 PLUSEQ,
                 MINUSEQ,
@@ -64,8 +62,7 @@ class Checker(bContext: BindingContext, tree: KtFile) {
                 DIVEQ
             )
         }
-        println(propEqFilter)
-        return false
-
+        val propLeft = propEqFilter.filter { (it.parent.node.psi as KtBinaryExpression).left == it }
+        return (propLeft.isNotEmpty())
     }
 }
