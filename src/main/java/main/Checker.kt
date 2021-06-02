@@ -8,6 +8,7 @@ import org.jetbrains.kotlin.lexer.KtSingleValueToken
 import org.jetbrains.kotlin.lexer.KtTokens.*
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.BindingContext
+import org.jetbrains.kotlin.resolve.calls.callUtil.getPropertyResolvedCallWithAssert
 import org.jetbrains.kotlin.resolve.calls.callUtil.getResolvedCall
 
 
@@ -44,25 +45,23 @@ class Checker(bContext: BindingContext, tree: KtFile) {
 
     private fun KtNamedFunction.fieldChange(): Boolean {
         val properties = PsiTreeUtil.collectElementsOfType(this, KtQualifiedExpression::class.java)
-        val propTypeFilter = properties.mapNotNull {
+        val propRes = properties.mapNotNull {
             try {
-                if (it.parent.node.elementType == BINARY_EXPRESSION) it
-                else null
+                it.getPropertyResolvedCallWithAssert(ctx)
+                it
             } catch (e: AssertionError) {
                 null
             }
         }
-        //PLUSEQ      EQ      MINUSEQ      MULTEQ     DIVEQ
+        val propTypeFilter = propRes.mapNotNull {
+            if (it.parent.node.elementType == BINARY_EXPRESSION) it
+            else null
+        }
         val propEqFilter = propTypeFilter.filter {
-            (it.parent.node.psi as KtBinaryExpression).operationToken in setOf<KtSingleValueToken>(
-                EQ,
-                PLUSEQ,
-                MINUSEQ,
-                MULTEQ,
-                DIVEQ
-            )
+            (it.parent.node.psi as KtBinaryExpression).operationToken == EQ
         }
         val propLeft = propEqFilter.filter { (it.parent.node.psi as KtBinaryExpression).left == it }
+        println(propLeft.map{ it.parent.node.chars })
         return (propLeft.isNotEmpty())
     }
 }
