@@ -1,11 +1,11 @@
 package main
 
 
-
 import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.KtNodeTypes.BINARY_EXPRESSION
 import org.jetbrains.kotlin.js.resolve.diagnostics.findPsi
-import org.jetbrains.kotlin.lexer.KtTokens.EQ
+import org.jetbrains.kotlin.lexer.KtSingleValueToken
+import org.jetbrains.kotlin.lexer.KtTokens.*
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.calls.callUtil.getResolvedCall
@@ -55,8 +55,15 @@ class Checker(bContext: BindingContext, tree: KtFile) {
         }
         //PLUSEQ      EQ      MINUSEQ      MULTEQ     DIVEQ
         println(propTypeFilter)
-        val propEqFilter = propTypeFilter.mapNotNull {
-            println(((it.node.psi as KtBinaryExpression).operationToken) == EQ) }
+        val propEqFilter = propTypeFilter.filter {
+            (it.node.psi as KtBinaryExpression).operationToken in setOf<KtSingleValueToken>(
+                EQ,
+                PLUSEQ,
+                MINUSEQ,
+                MULTEQ,
+                DIVEQ
+            )
+        }
         println(propEqFilter)
         return false
 
