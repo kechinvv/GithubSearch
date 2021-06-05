@@ -4,8 +4,7 @@ package main
 import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.KtNodeTypes.BINARY_EXPRESSION
 import org.jetbrains.kotlin.js.resolve.diagnostics.findPsi
-import org.jetbrains.kotlin.lexer.KtSingleValueToken
-import org.jetbrains.kotlin.lexer.KtTokens.*
+import org.jetbrains.kotlin.lexer.KtTokens.EQ
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.calls.callUtil.getPropertyResolvedCallWithAssert
@@ -53,15 +52,30 @@ class Checker(bContext: BindingContext, tree: KtFile) {
                 null
             }
         }
-        val propTypeFilter = propRes.mapNotNull {
-            if (it.parent.node.elementType == BINARY_EXPRESSION) it
+        val propFilter = propRes.mapNotNull {
+            var a = it.parent
+            var quit = false
+            var c = a
+            for (i in 1..3) {
+                try {
+                    val b = a as KtQualifiedExpression
+                    break
+                } catch (e: ClassCastException) {
+                }
+                if (a.node.elementType == BINARY_EXPRESSION &&
+                    (a.node.psi as KtBinaryExpression).operationToken == EQ &&
+                    ((a.node.psi as KtBinaryExpression).left == it || (a.node.psi as KtBinaryExpression).left == c)
+                ) {
+                    quit = true
+                    break
+                }
+                c = a
+                a = a.parent
+            }
+            if (quit) it
             else null
         }
-        val propEqFilter = propTypeFilter.filter {
-            (it.parent.node.psi as KtBinaryExpression).operationToken == EQ
-        }
-        val propLeft = propEqFilter.filter { (it.parent.node.psi as KtBinaryExpression).left == it }
-        println(propLeft.map{ it.parent.node.chars })
-        return (propLeft.isNotEmpty())
+        //println(propFilter.map { it.getPropertyResolvedCallWithAssert(ctx).resultingDescriptor })
+        return (propFilter.isNotEmpty())
     }
 }
