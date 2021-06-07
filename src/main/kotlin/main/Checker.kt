@@ -3,6 +3,8 @@ package main
 
 import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.KtNodeTypes.BINARY_EXPRESSION
+import org.jetbrains.kotlin.descriptors.CallableDescriptor
+import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.js.resolve.diagnostics.findPsi
 import org.jetbrains.kotlin.lexer.KtTokens.EQ
 import org.jetbrains.kotlin.psi.*
@@ -12,37 +14,52 @@ import org.jetbrains.kotlin.resolve.calls.callUtil.getResolvedCall
 
 
 class Checker(bContext: BindingContext, tree: KtFile) {
-    var ctx: BindingContext = bContext
-    var psi: KtFile = tree
+    private var ctx: BindingContext = bContext
+    private var psi: KtFile = tree
 
+    fun getContext(): BindingContext {
+        return ctx
+    }
 
-    fun checkRecursion(): Boolean {
+    fun getPSI(): KtFile {
+        return psi
+    }
+
+    fun checkRecursion(): MutableList<CallableDescriptor> {
         val functions = PsiTreeUtil.collectElementsOfType(psi, KtNamedFunction::class.java)
-        functions.forEach { if (it.isRecursive(ctx)) return true }
-        return false
+        val result: MutableList<CallableDescriptor> = mutableListOf()
+        functions.forEach { x ->
+            val a = x.isRecursive()
+            if (a.isNotEmpty()) {
+                a.forEach { result.add(it) }
+            }
+        }
+        println(result)
+        return result
     }
 
 
-    private fun KtNamedFunction.isRecursive(ctx: BindingContext): Boolean {
+    private fun KtNamedFunction.isRecursive(): List<CallableDescriptor> {
         val nestedCalls = PsiTreeUtil.collectElementsOfType(this, KtCallExpression::class.java)
-        //    println(nestedCalls)
         val resolvedCalls = nestedCalls.mapNotNull { it.getResolvedCall(ctx) }
-        //    println(resolvedCalls)
         val functionDescriptors = resolvedCalls.map { it.resultingDescriptor }
-        //     println(functionDescriptors)
-        val functionsPsi = functionDescriptors.mapNotNull { it.findPsi() }
-        //     println(functionsPsi)
-        return functionsPsi.any { it == this }
-        // return false
+        return functionDescriptors.filter { it.findPsi() == this }
     }
 
-    fun checkFieldChange(): Boolean {
+    fun checkFieldChange(): MutableList<PropertyDescriptor> {
         val functions = PsiTreeUtil.collectElementsOfType(psi, KtNamedFunction::class.java)
-        functions.forEach { if (it.fieldChange()) return true }
-        return false
+        val result: MutableList<PropertyDescriptor> = mutableListOf()
+        functions.forEach { x ->
+            val a = x.fieldChange()
+            if (a.isNotEmpty()) {
+                a.forEach { result.add(it) }
+            }
+        }
+        println(result)
+        return result
     }
 
-    private fun KtNamedFunction.fieldChange(): Boolean {
+    private fun KtNamedFunction.fieldChange(): List<PropertyDescriptor> {
         val properties = PsiTreeUtil.collectElementsOfType(this, KtQualifiedExpression::class.java)
         val propRes = properties.mapNotNull {
             try {
@@ -57,11 +74,7 @@ class Checker(bContext: BindingContext, tree: KtFile) {
             var quit = false
             var c = a
             for (i in 1..3) {
-                try {
-                    val b = a as KtQualifiedExpression
-                    break
-                } catch (e: ClassCastException) {
-                }
+                if (a is KtQualifiedExpression) break
                 if (a.node.elementType == BINARY_EXPRESSION &&
                     (a.node.psi as KtBinaryExpression).operationToken == EQ &&
                     ((a.node.psi as KtBinaryExpression).left == it || (a.node.psi as KtBinaryExpression).left == c)
@@ -75,7 +88,6 @@ class Checker(bContext: BindingContext, tree: KtFile) {
             if (quit) it
             else null
         }
-        //println(propFilter.map { it.getPropertyResolvedCallWithAssert(ctx).resultingDescriptor })
-        return (propFilter.isNotEmpty())
+        return propFilter.map { it.getPropertyResolvedCallWithAssert(ctx).resultingDescriptor }
     }
 }
