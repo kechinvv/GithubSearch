@@ -31,7 +31,7 @@ class Checker(bContext: BindingContext, tree: KtFile) {
         functions.forEach { x ->
             val a = x.isRecursive()
             if (a.isNotEmpty()) {
-                a.forEach { result.add(it) }
+                result += a
             }
         }
         println(result)

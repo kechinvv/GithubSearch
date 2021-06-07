@@ -4,6 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import main.link.OrderType;
+import main.link.SortType;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,29 +16,33 @@ import java.util.ArrayDeque;
 import java.util.Iterator;
 
 public class RepIterator implements Iterator<String> {
-    int p = -1; //order - desc asc    sort - stars forks help-wanted-issues updated and default - best match
-    String link = "https://api.github.com/search/repositories?q=kotlin+language:kotlin&sort=stars&order=desc&per_page=10&page=" + p;
-    ArrayDeque<String> page;
 
+    private final static String TEMPLATE_URL = "https://api.github.com/search/repositories?q=%s+language:kotlin&sort=%s&order=%s&per_page=10&page=";
+    private final int limit;
+    String link;
+    ArrayDeque<String> reps;
+    private int counter = 0;
+    private int page = -1;
+    // String link = "https://api.github.com/search/repositories?q=kotlin+language:kotlin&sort=stars&order=desc&per_page=10&page=" + p;
+
+    public RepIterator(int limit, String keywords, SortType sort, OrderType order) {
+        this.limit = limit;
+        this.link = String.format(TEMPLATE_URL, keywords, sort.getCode(), order.getCode());
+    }
 
     @Override
     public boolean hasNext() {
-        return false;
+        nextPage();
+        return (counter < limit && !reps.isEmpty());
     }
 
     public String next() {
-        if (page.isEmpty()) {
-            p++;
-            try {
-                page = getReps(link);
-            } catch (IOException e) {
-                System.out.println("Network error");
-            }
-        }
-        return page.pollLast();
+        nextPage();
+        counter++;
+        return reps.pollLast();
     }
 
-    public ArrayDeque<String> getReps(String url) throws IOException {
+    private ArrayDeque<String> getReps(String url) throws IOException {
         URL obj = new URL(url);
         HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
         connection.setRequestMethod("GET");
@@ -47,6 +53,7 @@ public class RepIterator implements Iterator<String> {
                 response.append(inputLine);
             }
         }
+        connection.disconnect();
         JsonObject json = JsonParser.parseString(String.valueOf(response)).getAsJsonObject();
         JsonArray array = (json.getAsJsonArray("items"));
         ArrayDeque<String> href = new ArrayDeque<>(10);
@@ -54,5 +61,16 @@ public class RepIterator implements Iterator<String> {
             href.add(j.getAsJsonObject().getAsJsonPrimitive("html_url").getAsString());
         }
         return href;
+    }
+
+    private void nextPage() {
+        if (reps.isEmpty()) {
+            page++;
+            try {
+                reps = getReps(link + page);
+            } catch (IOException e) {
+                System.out.println("Network error");
+            }
+        }
     }
 }
