@@ -27,7 +27,7 @@ public class RepIterator implements Iterator<RemoteRepository> {
 
     public RepIterator(int limit, String keywords, SortType sort, OrderType order) {
         this.limit = limit;
-        this.link = String.format(TEMPLATE_URL, keywords, sort.getCode(), order.getCode());
+        this.link = String.format(TEMPLATE_URL, keywords.trim().replace(' ', '+'), sort.getCode(), order.getCode());
     }
 
     @Override
