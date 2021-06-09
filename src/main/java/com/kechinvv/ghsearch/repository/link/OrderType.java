@@ -1,4 +1,4 @@
-package main.link;
+package com.kechinvv.ghsearch.repository.link;
 
 public enum OrderType {
     DESC("desc"),

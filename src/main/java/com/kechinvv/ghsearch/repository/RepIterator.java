@@ -1,11 +1,11 @@
-package main;
+package com.kechinvv.ghsearch.repository;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import main.link.OrderType;
-import main.link.SortType;
+import com.kechinvv.ghsearch.repository.link.OrderType;
+import com.kechinvv.ghsearch.repository.link.SortType;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,11 +19,10 @@ public class RepIterator implements Iterator<RemoteRepository> {
 
     private final static String TEMPLATE_URL = "https://api.github.com/search/repositories?q=%s+language:kotlin&sort=%s&order=%s&per_page=10&page=";
     private final int limit;
-    String link;
-    ArrayDeque<RemoteRepository> reps;
+    private final String link;
+    private ArrayDeque<RemoteRepository> reps = new ArrayDeque<>(10);
     private int counter = 0;
     private int page = -1;
-    // String link = "https://api.github.com/search/repositories?q=kotlin+language:kotlin&sort=stars&order=desc&per_page=10&page=" + p;
 
     public RepIterator(int limit, String keywords, SortType sort, OrderType order) {
         this.limit = limit;
@@ -32,14 +31,18 @@ public class RepIterator implements Iterator<RemoteRepository> {
 
     @Override
     public boolean hasNext() {
-        nextPage();
+        try {
+            nextPage();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
         return (counter < limit && !reps.isEmpty());
     }
 
     public RemoteRepository next() {
-        nextPage();
         counter++;
-        return reps.pollLast();
+        return reps.removeLast();
     }
 
     private ArrayDeque<RemoteRepository> getReps(String url) throws IOException {
@@ -66,14 +69,10 @@ public class RepIterator implements Iterator<RemoteRepository> {
         return href;
     }
 
-    private void nextPage() {
+    private void nextPage() throws IOException {
         if (reps.isEmpty()) {
             page++;
-            try {
-                reps = getReps(link + page);
-            } catch (IOException e) {
-                System.out.println("Network error");
-            }
+            reps = getReps(link + page);
         }
     }
 }

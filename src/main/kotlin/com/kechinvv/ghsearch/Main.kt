@@ -1,18 +1,24 @@
-package main
+package com.kechinvv.ghsearch
 
+import com.kechinvv.ghsearch.filter.impl.FilterFieldChange.fieldChange
+import com.kechinvv.ghsearch.filter.impl.FilterRecursion
+import com.kechinvv.ghsearch.repository.RepIterator
+import com.kechinvv.ghsearch.repository.link.OrderType
+import com.kechinvv.ghsearch.repository.link.SortType
 import com.spbpu.mppconverter.kootstrap.PSICreator
-import main.filter.impl.FilterFieldChange.fieldChange
-import main.filter.impl.FilterRecursion
-import main.link.OrderType
-import main.link.SortType
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
+import java.nio.file.Paths
 
 
 fun main(args: Array<String>) {
-    val iterator = RepIterator(100, "kotlin", SortType.STARS, OrderType.DESC)
-    while (iterator.hasNext()) {
-        val remRep = iterator.next()
-        val localRep = remRep.cloneTo("C:/Users/valer/IdeaProjects/GithubSearch/zips/" + remRep.name)
+    if (args.isEmpty()) throw IllegalArgumentException("Not enough args")
+    RepIterator(
+        100,
+        "kotlin",
+        SortType.STARS,
+        OrderType.DESC
+    ).forEach { repository ->
+        val localRep = repository.cloneTo(Paths.get(args[0], repository.name))
         val stream = localRep.ktStream
         stream.forEach { x ->
             val creator = PSICreator()

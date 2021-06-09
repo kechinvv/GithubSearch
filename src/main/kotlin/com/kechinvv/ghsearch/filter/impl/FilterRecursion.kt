@@ -1,7 +1,7 @@
-package main.filter.impl
+package com.kechinvv.ghsearch.filter.impl
 
 import com.intellij.psi.util.PsiTreeUtil
-import main.filter.Filter
+import com.kechinvv.ghsearch.filter.Filter
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.js.resolve.diagnostics.findPsi
 import org.jetbrains.kotlin.psi.KtCallExpression
