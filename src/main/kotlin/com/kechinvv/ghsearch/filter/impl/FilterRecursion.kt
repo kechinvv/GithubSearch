@@ -21,7 +21,6 @@ object FilterRecursion : Filter<KtNamedFunction> {
                 result += x
             }
         }
-        println(result)
         return result
     }
 

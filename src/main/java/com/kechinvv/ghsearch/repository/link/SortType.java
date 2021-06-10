@@ -4,7 +4,7 @@ public enum SortType {
     STARS("stars"),
     FORKS("forks"),
     HELP_WANTED_ISSUES("help-wanted-issues"),
-    BEST_MATCH(""),
+    BEST_MATCH("best-match"),
     UPDATED("updated");
     private final String code;
 

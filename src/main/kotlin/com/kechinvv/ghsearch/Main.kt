@@ -13,13 +13,14 @@ import java.nio.file.Paths
 fun main(args: Array<String>) {
     if (args.isEmpty()) throw IllegalArgumentException("Not enough args")
     RepIterator(
-        100,
+        5,
         "kotlin",
         SortType.STARS,
         OrderType.DESC
     ).forEach { repository ->
         val localRep = repository.cloneTo(Paths.get(args[0], repository.name))
         val stream = localRep.ktStream
+        var flag = false
         stream.forEach { x ->
             val creator = PSICreator()
             val psi = creator.getPSIForFile(x)
@@ -30,7 +31,8 @@ fun main(args: Array<String>) {
                 val a = it.fieldChange(ctx)
                 if (a.isNotEmpty()) fields += a
             }
-            if (fields.isEmpty()) localRep.delete()
+            if (fields.isNotEmpty()) flag = true
         }
+        if (!flag) localRep.delete()
     }
 }

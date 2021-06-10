@@ -18,7 +18,8 @@ public class RemoteRepository {
 
     public LocalRepository cloneTo(Path path) throws InterruptedException, IOException {
         Process proc = new ProcessBuilder("git", "clone", "--depth=1", "--recurse-submodules", url, path.toString()).start();
-        proc.waitFor();
+        int a = proc.waitFor();
+        System.out.println(a);
         proc.destroy();
         return new LocalRepository(path);
     }

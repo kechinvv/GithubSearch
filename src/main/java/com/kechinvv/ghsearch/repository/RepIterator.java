@@ -17,10 +17,10 @@ import java.util.Iterator;
 
 public class RepIterator implements Iterator<RemoteRepository> {
 
-    private final static String TEMPLATE_URL = "https://api.github.com/search/repositories?q=%s+language:kotlin&sort=%s&order=%s&per_page=10&page=";
+    private final static String TEMPLATE_URL = "https://api.github.com/search/repositories?q=%s+language:kotlin&sort=%s&order=%s&per_page=100&page=";
     private final int limit;
     private final String link;
-    private ArrayDeque<RemoteRepository> reps = new ArrayDeque<>(10);
+    private ArrayDeque<RemoteRepository> reps = new ArrayDeque<>(100);
     private int counter = 0;
     private int page = -1;
 
@@ -59,11 +59,11 @@ public class RepIterator implements Iterator<RemoteRepository> {
         connection.disconnect();
         JsonObject json = JsonParser.parseString(String.valueOf(response)).getAsJsonObject();
         JsonArray array = (json.getAsJsonArray("items"));
-        ArrayDeque<RemoteRepository> href = new ArrayDeque<>(10);
+        ArrayDeque<RemoteRepository> href = new ArrayDeque<>(100);
         for (JsonElement j : array) {
             JsonObject repObj = j.getAsJsonObject();
             String repUrl = repObj.getAsJsonPrimitive("html_url").getAsString();
-            String name = repObj.getAsJsonObject().getAsJsonPrimitive("full_name").getAsString();
+            String name = repObj.getAsJsonObject().getAsJsonPrimitive("full_name").getAsString().replace('/', '+');
             href.add(new RemoteRepository(repUrl, name));
         }
         return href;
