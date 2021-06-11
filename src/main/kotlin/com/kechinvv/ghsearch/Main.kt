@@ -13,18 +13,18 @@ import java.nio.file.Paths
 fun main(args: Array<String>) {
     if (args.isEmpty()) throw IllegalArgumentException("Not enough args")
     RepIterator(
-        5,
+        100,
         "kotlin",
         SortType.STARS,
         OrderType.DESC
     ).forEach { repository ->
         val localRep = repository.cloneTo(Paths.get(args[0], repository.name))
-        val stream = localRep.ktStream
+        val project = localRep.path.toString()
         var flag = false
-        stream.forEach { x ->
-            val creator = PSICreator()
-            val psi = creator.getPSIForFile(x)
-            val ctx = creator.getBinding()
+        val creator = PSICreator()
+        val trees = creator.getPSIForProject(project)
+        val ctx = creator.getBinding(project)
+        trees.forEach { psi ->
             val recursionFunctions = FilterRecursion.require(psi, ctx!!)
             val fields: MutableList<PropertyDescriptor> = mutableListOf()
             recursionFunctions.forEach {
