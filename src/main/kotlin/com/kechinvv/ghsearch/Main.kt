@@ -13,7 +13,7 @@ import java.nio.file.Paths
 fun main(args: Array<String>) {
     if (args.isEmpty()) throw IllegalArgumentException("Not enough args")
     RepIterator(
-        10,
+        4,
         "kotlin",
         SortType.STARS,
         OrderType.DESC
@@ -22,8 +22,9 @@ fun main(args: Array<String>) {
         val project = localRep.path.toString()
         var flag = false
         val creator = PSICreator()
-        val trees = creator.getPSIForProject(project)
-        val ctx = creator.getBinding(project)
+        val psiCtx = creator.getPSIForProject(project)
+        val trees = psiCtx.first
+        val ctx = psiCtx.second
         if (ctx != null) {
             trees.forEach { psi ->
                 val recursionFunctions = FilterRecursion.require(psi, ctx)
