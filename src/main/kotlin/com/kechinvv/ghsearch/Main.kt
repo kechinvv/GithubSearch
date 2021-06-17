@@ -23,18 +23,16 @@ fun main(args: Array<String>) {
         var flag = false
         val creator = PSICreator()
         val psiCtx = creator.getPSIForProject(project)
-        val trees = psiCtx.first
+        val psi = psiCtx.first
         val ctx = psiCtx.second
         if (ctx != null) {
-            trees.forEach { psi ->
-                val recursionFunctions = FilterRecursion.require(psi, ctx)
-                val fields: MutableList<PropertyDescriptor> = mutableListOf()
-                recursionFunctions.forEach {
-                    val a = it.fieldChange(ctx)
-                    if (a.isNotEmpty()) fields += a
-                }
-                if (fields.isNotEmpty()) flag = true
+            val recursionFunctions = FilterRecursion.require(psi, ctx)
+            val fields: MutableList<PropertyDescriptor> = mutableListOf()
+            recursionFunctions.forEach {
+                val a = it.fieldChange(ctx)
+                if (a.isNotEmpty()) fields += a
             }
+            if (fields.isNotEmpty()) flag = true
         }
         println(flag)
         if (!flag) localRep.delete()

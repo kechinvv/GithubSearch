@@ -14,16 +14,18 @@ import org.jetbrains.kotlin.resolve.calls.callUtil.getPropertyResolvedCallWithAs
 
 object FilterFieldChange : Filter<PropertyDescriptor> {
 
-    override fun require(psi: KtFile, context: BindingContext): List<PropertyDescriptor> {
-        val functions = PsiTreeUtil.collectElementsOfType(psi, KtNamedFunction::class.java)
+    override fun require(psi: List<KtFile>, context: BindingContext): List<PropertyDescriptor> {
         val result: MutableList<PropertyDescriptor> = mutableListOf()
-        functions.forEach { x ->
-            val a = x.fieldChange(context)
-            if (a.isNotEmpty()) {
-                a.forEach { result.add(it) }
+        psi.forEach {
+            val functions = PsiTreeUtil.collectElementsOfType(it, KtNamedFunction::class.java)
+
+            functions.forEach { x ->
+                val a = x.fieldChange(context)
+                if (a.isNotEmpty()) {
+                    a.forEach { result.add(it) }
+                }
             }
         }
-        println(result)
         return result
     }
 

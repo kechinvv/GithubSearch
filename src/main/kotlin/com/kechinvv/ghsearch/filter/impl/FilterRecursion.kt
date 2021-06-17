@@ -12,13 +12,15 @@ import org.jetbrains.kotlin.resolve.calls.callUtil.getResolvedCall
 
 object FilterRecursion : Filter<KtNamedFunction> {
 
-    override fun require(psi: KtFile, context: BindingContext): List<KtNamedFunction> {
-        val functions = PsiTreeUtil.collectElementsOfType(psi, KtNamedFunction::class.java)
+    override fun require(psi: List<KtFile>, context: BindingContext): List<KtNamedFunction> {
         val result: MutableList<KtNamedFunction> = mutableListOf()
-        functions.forEach { x ->
-            val a = x.isRecursive(context)
-            if (a.isNotEmpty()) {
-                result += x
+        psi.forEach {
+            val functions = PsiTreeUtil.collectElementsOfType(it, KtNamedFunction::class.java)
+            functions.forEach { x ->
+                val a = x.isRecursive(context)
+                if (a.isNotEmpty()) {
+                    result += x
+                }
             }
         }
         return result

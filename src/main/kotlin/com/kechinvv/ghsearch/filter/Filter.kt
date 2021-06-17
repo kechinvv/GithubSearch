@@ -5,6 +5,6 @@ import org.jetbrains.kotlin.resolve.BindingContext
 
 interface Filter<T> {
 
-    fun require(psi: KtFile, context: BindingContext): List<T>
+    fun require(psi: List<KtFile>, context: BindingContext): List<T>
 
 }
