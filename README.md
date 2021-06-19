@@ -33,7 +33,7 @@ The necessary data for performing checks can be obtained as follows:
 PSICreator().getPSIForProject(String path_to_project)
 ```
 This return to you Pair<KtFile (contains PSI), BindingContext>. With this data, you can call checks, see what they return, and delete unnecessary repositories.
-## Checks
+## Checks <a name="checks"></a>
 Currently, two checks are implemented: CheckRecursion (return list of recursive functions) and ChecFieldChange (return list of changed fields). You can implement interface Check and create you own check. 
 ## License <a name="license"></a>
 Apache License 2.0
