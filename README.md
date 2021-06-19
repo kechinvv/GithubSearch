@@ -3,7 +3,7 @@
 1. [General info](#general-info)
 2. [Get started](#get-started)
 3. [Usage](#usage)
-4. [Checks] (#checks)
+4. [Checks](#checks)
 5. [License](#license)
 
 ## General info <a name="general-info"></a>
