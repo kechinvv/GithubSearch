@@ -18,4 +18,4 @@ git submodule add https://github.com/kechinvv/GithubSearch destination_folder
 The first paragraph text
 
 ## License <a name="license"></a>
-The second paragraph text
+Apache License 2.0
