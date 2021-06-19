@@ -9,8 +9,8 @@
 This program allows you to get projects from github, perform some checks on them, and leave only the necessary ones. You can also implement your own checks and use the library's methods for your own purposes.
 
 ## Get started <a name="get-started"></a>
-For example, you can use GithubSearch as a submodule in your program. But in this case, you need to remove the line > id 'application' in build.gradle of GithubSearch.
-> git submodule add https://github.com/kechinvv/GithubSearch destination_folder
+For example, you can use GithubSearch as a submodule in your program. But in this case, you need to remove the line **id 'application'** in build.gradle of GithubSearch.
+--- git submodule add https://github.com/kechinvv/GithubSearch destination_folder
 
 ## Usage <a name="usage"></a>
 The first paragraph text
