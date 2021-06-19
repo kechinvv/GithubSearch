@@ -1,7 +1,7 @@
-package com.kechinvv.ghsearch.filter.impl
+package com.kechinvv.ghsearch.checker.impl
 
 import com.intellij.psi.util.PsiTreeUtil
-import com.kechinvv.ghsearch.filter.Filter
+import com.kechinvv.ghsearch.checker.Check
 import org.jetbrains.kotlin.KtNodeTypes
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.lexer.KtTokens
@@ -12,7 +12,7 @@ import org.jetbrains.kotlin.psi.KtQualifiedExpression
 import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.calls.callUtil.getPropertyResolvedCallWithAssert
 
-object FilterFieldChange : Filter<PropertyDescriptor> {
+object CheckFieldChange : Check<PropertyDescriptor> {
 
     override fun require(psi: List<KtFile>, context: BindingContext): List<PropertyDescriptor> {
         val result: MutableList<PropertyDescriptor> = mutableListOf()

@@ -1,7 +1,7 @@
-package com.kechinvv.ghsearch.filter.impl
+package com.kechinvv.ghsearch.checker.impl
 
 import com.intellij.psi.util.PsiTreeUtil
-import com.kechinvv.ghsearch.filter.Filter
+import com.kechinvv.ghsearch.checker.Check
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.js.resolve.diagnostics.findPsi
 import org.jetbrains.kotlin.psi.KtCallExpression
@@ -10,7 +10,7 @@ import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.calls.callUtil.getResolvedCall
 
-object FilterRecursion : Filter<KtNamedFunction> {
+object CheckRecursion : Check<KtNamedFunction> {
 
     override fun require(psi: List<KtFile>, context: BindingContext): List<KtNamedFunction> {
         val result: MutableList<KtNamedFunction> = mutableListOf()

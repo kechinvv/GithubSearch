@@ -1,7 +1,7 @@
 package com.kechinvv.ghsearch
 
-import com.kechinvv.ghsearch.filter.impl.FilterFieldChange.fieldChange
-import com.kechinvv.ghsearch.filter.impl.FilterRecursion
+import com.kechinvv.ghsearch.checker.impl.CheckFieldChange.fieldChange
+import com.kechinvv.ghsearch.checker.impl.CheckRecursion
 import com.kechinvv.ghsearch.repository.RepIterator
 import com.kechinvv.ghsearch.repository.link.OrderType
 import com.kechinvv.ghsearch.repository.link.SortType
@@ -21,12 +21,11 @@ fun main(args: Array<String>) {
         val localRep = repository.cloneTo(Paths.get(args[0], repository.name))
         val project = localRep.path.toString()
         var flag = false
-        val creator = PSICreator()
-        val psiCtx = creator.getPSIForProject(project)
+        val psiCtx = PSICreator().getPSIForProject(project)
         val psi = psiCtx.first
         val ctx = psiCtx.second
         if (ctx != null) {
-            val recursionFunctions = FilterRecursion.require(psi, ctx)
+            val recursionFunctions = CheckRecursion.require(psi, ctx)
             val fields: MutableList<PropertyDescriptor> = mutableListOf()
             recursionFunctions.forEach {
                 val a = it.fieldChange(ctx)
