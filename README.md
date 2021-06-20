@@ -50,8 +50,12 @@ return, and delete unnecessary repositories.
 
 ## Checks <a name="checks"></a>
 
-Currently, three checks are implemented: CheckRecursion (return list of recursive functions), CheckFieldChange (return
-list of changed fields) and CheckOverrideFun (return list of override functions). You can implement interface Check and create your own check.
+Currently, three checks are implemented: 
+1. CheckRecursion (return list of recursive functions) 
+2. CheckFieldChange (return list of changed fields)
+3. CheckOverrideFun (return list of override functions) 
+   
+You can implement interface Check and create your own check.
 
 ## License <a name="license"></a>
 
