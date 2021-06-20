@@ -1,5 +1,5 @@
 # GithubSearch
-
+[![CI](https://github.com/kechinvv/GithubSearch/actions/workflows/blank.yml/badge.svg)](https://github.com/kechinvv/GithubSearch/actions/workflows/blank.yml)
 ## Table of contents
 
 1. [General info](#general-info)
