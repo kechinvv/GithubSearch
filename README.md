@@ -16,7 +16,7 @@ git submodule add https://github.com/kechinvv/GithubSearch destination_folder
 ```
 
 ## Usage <a name="usage"></a>
-Example of usage is found in src/main/kotlin/com.kechinvv.ghsearch/main.
+Example of usage is located in src/main/kotlin/com.kechinvv.ghsearch/main.
 To iterate through the repositories, use RepIterator. To configure the search, the following fields are provided:
 ```
  public RepIterator(int limit, String keywords, SortType sort, OrderType order)
@@ -26,7 +26,7 @@ To iterate through the repositories, use RepIterator. To configure the search, t
 3. SortType sort  - sort by stars, forks, best matches, updates or help wanted issues.
 4. OrderType order - ascending or descending sorting.
 
-RepIterator.next return a RemoteRepository. To clone a repository to perform checks on it call remoteRep.cloneTo(Path path). This method return LocalRepository.
+RepIterator.next return a RemoteRepository. In order to clone a repository for running checks on it call remoteRep.cloneTo(Path path). This method return LocalRepository.
 
 The necessary data for performing checks can be obtained as follows:
 ```
@@ -34,6 +34,6 @@ PSICreator().getPSIForProject(String path_to_project)
 ```
 This return to you Pair<KtFile (contains PSI), BindingContext>. With this data, you can call checks, see what they return, and delete unnecessary repositories.
 ## Checks <a name="checks"></a>
-Currently, two checks are implemented: CheckRecursion (return list of recursive functions) and ChecFieldChange (return list of changed fields). You can implement interface Check and create you own check. 
+Currently, two checks are implemented: CheckRecursion (return list of recursive functions) and CheckFieldChange (return list of changed fields). You can implement interface Check and create your own check. 
 ## License <a name="license"></a>
 Apache License 2.0
