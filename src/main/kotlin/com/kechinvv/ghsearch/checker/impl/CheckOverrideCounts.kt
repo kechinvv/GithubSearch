@@ -2,26 +2,23 @@ package com.kechinvv.ghsearch.checker.impl
 
 import com.intellij.psi.util.PsiTreeUtil
 import com.kechinvv.ghsearch.checker.Check
-import org.jetbrains.kotlin.asJava.elements.KtLightMethod
-import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.psi.KtClassOrObject
+import org.jetbrains.kotlin.psi.KtFile
+import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.resolve.BindingContext
 
-object CheckOverrideCounts: Check<KtNamedFunction> {
+object CheckOverrideCounts : Check<KtNamedFunction> {
 
     override fun require(psi: List<KtFile>, context: BindingContext): List<KtNamedFunction> {
         val result: MutableList<KtNamedFunction> = mutableListOf()
+        val res: MutableList<Any> = mutableListOf()
         psi.forEach { tree ->
+            val functions = PsiTreeUtil.collectElementsOfType(tree, KtClassOrObject::class.java)
 
-        //    println(a)
-            val functions = PsiTreeUtil.collectElementsOfType(tree, KtNamedFunction::class.java)
-            val func = PsiTreeUtil.collectElementsOfType(tree, KtLightMethod::class.java)
-           // println(func)
-           // val resolveFunction = functions.mapNotNull { it}
-            //val resFunction = functions.mapNotNull { it.psiOrParent as PsiMethod}
-        //   println(functions.map { it. })
-           // println(resolveFunction)
-          //  println(resFunction)
+            functions.forEach { println(it.getSuperTypeList()?.text) }
+            res.addAll(functions)
         }
+
         return result
     }
 
